@@ -1,4 +1,5 @@
-from flask import Flask, requests, jsonify
+from flask import Flask, request, jsonify
+import requests as http_requests
 import anthropic
 import requests
 import json
@@ -62,7 +63,7 @@ def create_ghl_contact(lead_data):
             'lead_notes': lead_data.get('notes', '')
         }
     }
-    return requests.post(url, headers=headers, json=payload).json()
+    return http_requests.post(url, headers=headers, json=payload).json()
 
 # ── Webhook Endpoint ────────────────────────────────────────────────────
 @app.route('/new-lead', methods=['POST'])
