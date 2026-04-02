@@ -39,9 +39,9 @@ def extract_lead_data(email_body):
 
 # ── GHL Contact Creator ─────────────────────────────────────────────────
 def create_ghl_contact(lead_data):
-    url = 'https://rest.gohighlevel.com/v1/contacts/'
+    url = 'https://services.leadconnectorhq.com/hooks/x231M82jhEl1i8EzRYUt/webhook-trigger/d0b5c7c5-ece8-455a-a5c1-a02883d3898b'
     headers = {'Authorization': f'Bearer {GHL_API_KEY}', 'Content-Type': 'application/json'}
-    tags = ['BiggerPockets', 'IMS-Lead']
+    tags = ['src - biggerpockets', 'new lead']
     for field in ['loan_type', 'lead_temperature', 'experience_level']:
         if lead_data.get(field): tags.append(lead_data[field])
     payload = {
