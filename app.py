@@ -40,7 +40,7 @@ def extract_lead_data(email_body):
 
 # ── GHL Contact Creator ─────────────────────────────────────────────────
 def create_ghl_contact(lead_data):
-    url = 'https://services.leadconnectorhq.com/hooks/x231M82jhEl1i8EzRYUt/webhook-trigger/5c92c84d-d25d-4771-8c4c-f445ed7a4fc5'
+    url = 'https://services.leadconnectorhq.com/contacts/'
     headers = {'Authorization': f'Bearer {GHL_API_KEY}', 'Content-Type': 'application/json'}
     tags = ['src - biggerpockets', 'new lead']
     for field in ['loan_type', 'lead_temperature', 'experience_level']:
