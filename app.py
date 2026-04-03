@@ -1,17 +1,15 @@
-from flask import Flask, request, jsonify
-import requests as http_requests
-import anthropic
-import json
 import os
+import json
+import anthropic
+import requests
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# ── Configuration (pulled from environment variables) ──────────────────
 ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY')
 GHL_API_KEY = os.environ.get('GHL_API_KEY')
 GHL_LOCATION_ID = os.environ.get('GHL_LOCATION_ID')
 
-# ── Claude Email Parser ─────────────────────────────────────────────────
 def extract_lead_data(email_body):
     client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
     response = client.messages.create(
@@ -37,38 +35,32 @@ def extract_lead_data(email_body):
     )
     return json.loads(response.content[0].text.strip())
 
-# ── GHL Contact Creator ─────────────────────────────────────────────────
 def create_ghl_contact(lead_data):
     url = 'https://services.leadconnectorhq.com/contacts/'
-    headers = {'Authorization': f'Bearer {GHL_API_KEY}', 'Content-Type': 'application/json'}
+    headers = {
+        'Authorization': f'Bearer {GHL_API_KEY}',
+        'Content-Type': 'application/json',
+        'Version': '2021-07-28'
+    }
     tags = ['src - biggerpockets', 'new lead']
     for field in ['loan_type', 'lead_temperature', 'experience_level']:
-        if lead_data.get(field): tags.append(lead_data[field])
+        if lead_data.get(field):
+            tags.append(lead_data[field])
     payload = {
         'firstName': lead_data.get('first_name', ''),
         'lastName': lead_data.get('last_name', ''),
         'email': lead_data.get('email', ''),
         'phone': lead_data.get('phone', ''),
         'locationId': GHL_LOCATION_ID,
-        'tags': tags,
-        'customField': {
-            'loan_type': lead_data.get('loan_type', ''),
-            'property_type': lead_data.get('property_type', ''),
-            'loan_amount': lead_data.get('loan_amount', ''),
-            'property_state': lead_data.get('property_state', ''),
-            'timeline': lead_data.get('timeline', ''),
-            'credit_score': lead_data.get('credit_score', ''),
-            'experience_level': lead_data.get('experience_level', ''),
-            'lead_notes': lead_data.get('notes', '')
-        }
+        'tags': tags
     }
-    return http_requests.post(url, headers=headers, json=payload).json()
+    response = requests.post(url, headers=headers, json=payload)
+    return response.json()
 
-# ── Webhook Endpoint ────────────────────────────────────────────────────
 @app.route('/new-lead', methods=['POST'])
 def handle_new_lead():
     try:
-        data = request.json
+        data = request.get_json(force=True)
         email_body = data.get('email_body', '')
         if not email_body:
             return jsonify({'error': 'No email body provided'}), 400
@@ -83,5 +75,4 @@ def health_check():
     return jsonify({'status': 'running'}), 200
 
 if __name__ == '__main__':
-port = int(os.environ.get('PORT', 8080))
-app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
