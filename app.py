@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 import requests as http_requests
 import anthropic
-import requests
 import json
 import os
 
