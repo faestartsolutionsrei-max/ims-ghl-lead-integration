@@ -33,7 +33,13 @@ def extract_lead_data(email_body):
             Email: {email_body}'''
         }]
     )
-    return json.loads(response.content[0].text.strip())
+raw = response.content[0].text.strip()
+    # Strip markdown code blocks if Claude adds them
+    if raw.startswith("```"):
+        raw = raw.split("```")[1]
+        if raw.startswith("json"):
+            raw = raw[4:]
+    return json.loads(raw.strip())
 
 def create_ghl_contact(lead_data):
     url = 'https://services.leadconnectorhq.com/contacts/'
