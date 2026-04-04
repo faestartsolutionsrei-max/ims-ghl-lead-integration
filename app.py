@@ -18,23 +18,22 @@ def extract_lead_data(email_body):
         messages=[{
             'role': 'user',
             'content': f'''You are a mortgage lead intake assistant for Investor Mortgage Solutions.
-            Extract the following information from this BiggerPockets lead email and return
-            ONLY a JSON object with no extra text:
-            {{
-                "first_name": "", "last_name": "", "email": "", "phone": "",
-                "loan_type": "", "property_type": "", "loan_amount": "",
-                "purchase_price": "", "property_state": "", "timeline": "",
-                "credit_score": "", "experience_level": "", "notes": "",
-                "lead_temperature": ""
-            }}
-            For loan_type: DSCR, Non-QM, Bridge, Conventional, or Unknown
-            For lead_temperature: Hot, Warm, or Cold
-            For experience_level: First-Time, Experienced, or Seasoned
-            Email: {email_body}'''
+Extract the following information from this BiggerPockets lead email and return
+ONLY a JSON object with no extra text, no markdown, no code blocks:
+{{
+    "first_name": "", "last_name": "", "email": "", "phone": "",
+    "loan_type": "", "property_type": "", "loan_amount": "",
+    "purchase_price": "", "property_state": "", "timeline": "",
+    "credit_score": "", "experience_level": "", "notes": "",
+    "lead_temperature": ""
+}}
+For loan_type: DSCR, Non-QM, Bridge, Conventional, or Unknown
+For lead_temperature: Hot, Warm, or Cold
+For experience_level: First-Time, Experienced, or Seasoned
+Email: {email_body}'''
         }]
     )
-raw = response.content[0].text.strip()
-    # Strip markdown code blocks if Claude adds them
+    raw = response.content[0].text.strip()
     if raw.startswith("```"):
         raw = raw.split("```")[1]
         if raw.startswith("json"):
