@@ -65,7 +65,9 @@ def create_ghl_contact(lead_data):
 @app.route('/new-lead', methods=['POST'])
 def handle_new_lead():
     try:
-        data = request.get_json(force=True)
+        raw_data = request.get_data(as_text=True)
+        raw_data = raw_data.replace('\n', '\\n').replace('\r', '\\r').replace('\t', '\\t')
+        data = json.loads(raw_data)
         email_body = data.get('email_body', '')
         if not email_body:
             return jsonify({'error': 'No email body provided'}), 400
