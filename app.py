@@ -73,7 +73,11 @@ def handle_new_lead():
         ghl_response = create_ghl_contact(lead_data)
         return jsonify({'success': True, 'lead_data': lead_data, 'ghl_response': ghl_response}), 200
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"ERROR: {str(e)}")
+        print(f"TRACEBACK: {error_details}")
+        return jsonify({'error': str(e), 'details': error_details}), 500
 
 @app.route('/health', methods=['GET'])
 def health_check():
