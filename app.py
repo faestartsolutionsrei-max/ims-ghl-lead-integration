@@ -254,7 +254,9 @@ def health_check():
 # -------------------------------------------------------
 
 if __name__ == '__main__':
-    # Start the background poller thread before Flask begins serving
-    poller_thread = threading.Thread(target=poll_inbox, daemon=True)
-    poller_thread.start()
+# Start the background poller thread at module load time (works with gunicorn)
+poller_thread = threading.Thread(target=poll_inbox, daemon=True)
+poller_thread.start()
+
+if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
