@@ -17,7 +17,7 @@ AZURE_CLIENT_ID = os.environ.get('AZURE_CLIENT_ID')
 AZURE_TENANT_ID = os.environ.get('AZURE_TENANT_ID')
 AZURE_CLIENT_SECRET = os.environ.get('AZURE_CLIENT_SECRET')
 MAILBOX = 'fae@investormortgagesolutions.com'
-POLL_INTERVAL_SECONDS = 300  # 5 minutes
+POLL_INTERVAL_SECONDS = 900  # 15 minutes
 
 # --- In-memory set to track processed email IDs ---
 # Prevents duplicate GHL contacts if the same email is seen across poll cycles
@@ -254,9 +254,7 @@ def health_check():
 # -------------------------------------------------------
 
 if __name__ == '__main__':
-# Start the background poller thread at module load time (works with gunicorn)
-poller_thread = threading.Thread(target=poll_inbox, daemon=True)
-poller_thread.start()
-
-if __name__ == '__main__':
+    # Start the background poller thread before Flask begins serving
+    poller_thread = threading.Thread(target=poll_inbox, daemon=True)
+    poller_thread.start()
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
