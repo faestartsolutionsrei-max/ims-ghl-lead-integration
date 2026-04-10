@@ -17,7 +17,7 @@ AZURE_CLIENT_ID = os.environ.get('AZURE_CLIENT_ID')
 AZURE_TENANT_ID = os.environ.get('AZURE_TENANT_ID')
 AZURE_CLIENT_SECRET = os.environ.get('AZURE_CLIENT_SECRET')
 MAILBOX = 'fae@investormortgagesolutions.com'
-POLL_INTERVAL_SECONDS = 900  # 15 minutes
+POLL_INTERVAL_SECONDS = 300  # 5 minutes
 
 # --- In-memory set to track processed email IDs ---
 # Prevents duplicate GHL contacts if the same email is seen across poll cycles
