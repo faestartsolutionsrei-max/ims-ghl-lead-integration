@@ -255,9 +255,6 @@ def health_check():
 
 if __name__ == '__main__':
     # Start the background poller thread before Flask begins serving
-def poll_inbox():
-    time.sleep(30)  # Wait for env vars and full app startup
-    print(f'[Poller] Started. Polling every {POLL_INTERVAL_SECONDS}s.')
     poller_thread = threading.Thread(target=poll_inbox, daemon=True)
     poller_thread.start()
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
